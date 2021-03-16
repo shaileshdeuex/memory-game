@@ -3,7 +3,7 @@ function Card(props) {
 
   const handleClick = (id) => {
     setCompareArr({ id, value, flip: true });
-    changeCardDeck(id);
+    // changeCardDeck(id);
   };
 
   return (

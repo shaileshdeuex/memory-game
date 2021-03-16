@@ -2,7 +2,7 @@ import { useState } from "react";
 import Card from "./Card";
 
 const cardValue = [];
-const cardLevel = 8;
+const cardLevel = 4;
 let card = [];
 
 // creating values of the card
@@ -43,19 +43,20 @@ function Board() {
   const [cardDeck, setCardDeck] = useState(card);
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
+  const [pairCounter, setPairCounter] = useState(1);
 
-  const changeCardDeck = (cardID) => {
-    setCardDeck(
-      cardDeck.map((item, id) => {
-        if (id === cardID) {
-          item.flip = true;
-          return item;
-        } else {
-          return item;
-        }
-      })
-    );
-  };
+  // const changeCardDeck = (cardID) => {
+  //   setCardDeck(
+  //     cardDeck.map((item, id) => {
+  //       if (id === cardID) {
+  //         item.flip = true;
+  //         return item;
+  //       } else {
+  //         return item;
+  //       }
+  //     })
+  //   );
+  // };
 
   // method to check {} is empty or not
   function isObjectEmpty(value) {
@@ -66,10 +67,13 @@ function Board() {
   }
 
   const gameEnd = () => {
-    const result = cardDeck.filter((item) => item.flip);
-    if (result.length === cardLevel) {
+    if (pairCounter >= cardLevel / 2) {
       setGameOver(true);
     }
+    // const result = cardDeck.filter((item) => item.flip);
+    // if (result.length === cardLevel) {
+    //   setGameOver(true);
+    // }
   };
 
   const setCompareArr = (newState) => {
@@ -77,7 +81,7 @@ function Board() {
       cardDeck.map((item, id) => {
         if (id === newState.id) {
           item.flip = newState.flip;
-          gameEnd(); // demo of end game
+          // gameEnd(); // demo of end game
           return item;
         } else {
           return item;
@@ -91,7 +95,9 @@ function Board() {
       } else if (preState.id === newState.id) {
         return preState;
       } else if (preState.value === newState.value) {
-        console.log("Match Found");
+        setPairCounter(pairCounter + 1);
+        console.log("Match Found", pairCounter);
+        gameEnd();
         return {};
       } else {
         setTimeout(() => {
@@ -124,7 +130,6 @@ function Board() {
             key={id}
             cardDeck={cardDeck}
             {...item}
-            changeCardDeck={changeCardDeck}
             compareCardArr={compareCardArr}
             setCompareArr={setCompareArr}
           />
