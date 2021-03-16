@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import Card from "./Card";
 
 const cardValue = [];
-const cardLevel = 6;
+const cardLevel = 8;
 let card = [];
 
 // creating values of the card
@@ -12,7 +12,6 @@ const createCardValue = (cardLevel) => {
   }
   // console.log(cardValue);
 };
-
 createCardValue(cardLevel);
 
 // creating card
@@ -25,11 +24,15 @@ const createCards = (cardValue) => {
   }
   // console.log(card);
 };
-
 createCards(cardValue);
 
 function Board() {
   // createCards(cardValue);
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  function update() {
+    forceUpdate();
+  }
 
   const [cardDeck, setCardDeck] = useState(card);
 
@@ -46,6 +49,7 @@ function Board() {
           cardDeck={cardDeck}
           {...item}
           changeCardDeck={changeCardDeck}
+          forceUpdate={update}
         />
       ))}
     </div>

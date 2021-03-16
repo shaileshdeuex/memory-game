@@ -1,7 +1,7 @@
 let compareCardArr = [];
 
 function Card(props) {
-  let { id, flip, value, changeCardDeck } = props;
+  let { id, flip, value, changeCardDeck, forceUpdate } = props;
   let cardDeck = [...props.cardDeck];
 
   const compareCard = (cardArr) => {
@@ -10,12 +10,15 @@ function Card(props) {
     if (card1.value === card2.value) {
       console.log("Match Found");
     } else {
+      console.log("Not Match");
+
       setTimeout(() => {
         cardDeck[card1.id].flip = false;
         cardDeck[card2.id].flip = false;
-        console.log("Not Match");
         changeCardDeck(cardDeck);
-      }, 1000);
+        console.log(cardDeck);
+        forceUpdate();
+      }, 500);
     }
 
     compareCardArr = [];
@@ -25,10 +28,10 @@ function Card(props) {
     cardDeck[id].flip = true;
     compareCardArr.push({ ...cardDeck[id], id });
     console.log(compareCardArr);
+    changeCardDeck(cardDeck);
     if (compareCardArr.length === 2) {
       compareCard(compareCardArr);
     }
-    changeCardDeck(cardDeck);
   };
 
   return (

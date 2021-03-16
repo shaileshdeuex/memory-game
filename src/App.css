@@ -30,10 +30,6 @@
 }
 .no-flip {
   transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
-  -moz-transform: rotateY(0deg);
-  -ms-transform: rotateY(0deg);
-  -o-transform: rotateY(0deg);
 }
 
 .flip-card-front, .flip-card-back {
