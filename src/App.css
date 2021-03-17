@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  width: 40%;
+  width: 39%;
 }
 
 .board-header{
@@ -29,7 +29,7 @@
   font-size: 30px;
 }
 
-.board-header .btn {
+.btn {
   display: inline-block;
   padding: 0.50em 1.5em;
   border: 0.1em solid #FFFFFF;
@@ -47,9 +47,13 @@
   cursor: pointer;
   }
 
-  .board-header .btn:hover{
+.btn:hover{
   color:#282c34;
   background-color:#FFFFFF;
+  }
+
+  .btn:disabled {
+    cursor: not-allowed;
   }
 
 
@@ -116,6 +120,22 @@
 .flip-card-back h1{
 font-size: 60px;
   
+}
+.winnerContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.winnerContainer button{
+  margin: 20px auto;
+}
+
+.winnerGif{
+  pointer-events: none;
+  width: 480px;
+  height: 480px;
+  border: none;
+  display: block;
 }
 
 @media screen and (max-width: 1199px) {

@@ -1,9 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Card from "./Card";
-
-const cardLevel = 20;
-const cardValue = [];
-let card = [];
 
 // shuffle the cardValue array
 function shuffle(array) {
@@ -19,62 +15,48 @@ function isObjectEmpty(value) {
 }
 
 // creating values of the card
-const createCardValue = (cardLevel) => {
+const createCardValue = (cardLevel, arr) => {
   for (let i = 1; i <= cardLevel; i++) {
-    cardValue.push(Math.ceil(i / 2));
-  }
-};
-
-// creating card
-const createCards = (cardValue) => {
-  for (let i = 0; i < cardValue.length; i++) {
-    card.push({
+    arr.push({
       flip: false,
-      value: cardValue[i],
-      id: i,
+      value: Math.ceil(i / 2),
     });
   }
 };
 
-createCardValue(cardLevel); // generating card value
-const createGame = () => {
-  shuffle(cardValue); // shuffling the card value
-  createCards(cardValue); // creating card
-  // setCardDeck(card);
-};
-createGame(); //initial game start on page load
-
 function Board() {
+  const cardLevel = 16;
+  const card = [];
+
   // initialinzing state
   const [cardDeck, setCardDeck] = useState(card);
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
   const [heading, setHeading] = useState("Memory Game!");
-  const [pairCounter, setPairCounter] = useState(0);
+  const [pairCounter, setPairCounter] = useState(1);
+  const [movesCounter, setMovesCounter] = useState(0);
 
-  useEffect(() => {
-    card = []; // emptying card array after assigning to state value.
-    if (gameOver) {
-      setTimeout(() => {
-        // if game is over than re generating game after 2 sec of delay so user can see win screen
-        resetGame();
-      }, 2000);
-    }
-  }, [gameOver]);
+  createCardValue(cardLevel, card); // generating card value
+  shuffle(card); //initial game start
 
   // resetting game state on game over and on reset button click
-  const resetGame = () => {
-    createGame();
-    setCardDeck(card);
-    setCompareCardArr({});
+  const restartGame = () => {
+    resetGame();
     setHeading("Memory Game!");
     setGameOver(false);
-    setPairCounter(0);
+  };
+
+  const resetGame = () => {
+    shuffle(card);
+    setCardDeck(card);
+    setCompareCardArr({});
+    setPairCounter(1);
+    setMovesCounter(0);
   };
 
   // function to check game is ended or not
   const gameEnd = () => {
-    if (pairCounter >= cardLevel / 2 - 1) {
+    if (pairCounter >= cardLevel / 2) {
       setHeading("Congratulation you Won!");
       setGameOver(true);
     }
@@ -101,10 +83,12 @@ function Board() {
         return preState; // prev click and new click on same card, returning same value
       } else if (preState.value === newState.value) {
         setPairCounter(pairCounter + 1); // increasing pairCounter if preValue and newValue is same.
+        setMovesCounter(movesCounter + 1);
         console.log("Match Found", pairCounter);
         gameEnd();
         return {};
       } else {
+        setMovesCounter(movesCounter + 1);
         setTimeout(() => {
           // setting card value to previous state as pair is not found
           setCardDeck(
@@ -126,25 +110,39 @@ function Board() {
   return (
     <>
       <header className="board-header">
-        <h2 className="board-heading score">Score: {pairCounter}</h2>
+        <h2 className="board-heading score">Moves: {movesCounter}</h2>
         <h2 className="board-heading">{heading}</h2>
 
-        <button className="btn" onClick={() => setGameOver(true)}>
+        <button className="btn" onClick={resetGame} disabled={gameOver}>
           Reset
         </button>
       </header>
       <div className="board-body">
-        <div className="board-game">
-          {cardDeck.map((item, id) => (
-            <Card
-              key={id}
-              cardDeck={cardDeck}
-              {...item}
-              compareCardArr={compareCardArr}
-              setCompareArr={setCompareArr}
-            />
-          ))}
-        </div>
+        {gameOver ? (
+          <div className="winnerContainer">
+            <iframe
+              title="winner Gif"
+              src="https://giphy.com/embed/l0HlSDiA6WUytl9oA"
+              className="winnerGif"
+            ></iframe>
+            <button className="btn" onClick={restartGame}>
+              Play Again
+            </button>
+          </div>
+        ) : (
+          <div className="board-game">
+            {cardDeck.map((item, id) => (
+              <Card
+                key={id}
+                cardDeck={cardDeck}
+                {...item}
+                id={id}
+                compareCardArr={compareCardArr}
+                setCompareArr={setCompareArr}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
