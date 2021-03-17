@@ -1,46 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "./Card";
 
-const cardValue = [];
-const cardLevel = 8;
-let card = [];
-
-// creating values of the card
-const createCardValue = (cardLevel) => {
-  for (let i = 1; i <= cardLevel; i++) {
-    cardValue.push(Math.ceil(i / 2));
-  }
-};
-
-// shuffle the cardValue array
-function shuffle(array) {
-  array.sort(() => Math.random() - 0.5);
-}
-
-// creating card
-const createCards = (cardValue) => {
-  for (let i = 0; i < cardValue.length; i++) {
-    card.push({
-      flip: false,
-      value: cardValue[i],
-      id: i, // id updated
-    });
-  }
-};
-
-const createGame = () => {
-  createCardValue(cardLevel);
-  shuffle(cardValue);
-  createCards(cardValue);
-};
-
-createGame();
-
 function Board() {
-  const [cardDeck, setCardDeck] = useState(card);
+  const cardLevel = 20;
+
+  // initialinzing state
+  const [cardDeck, setCardDeck] = useState([]);
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
-  const [pairCounter, setPairCounter] = useState(1);
+  const [heading, setHeading] = useState(false);
+  const [pairCounter, setPairCounter] = useState(0);
+
+  useEffect(() => {
+    const cardValue = [];
+    let card = [];
+
+    // creating values of the card
+    const createCardValue = (cardLevel) => {
+      for (let i = 1; i <= cardLevel; i++) {
+        cardValue.push(Math.ceil(i / 2));
+      }
+    };
+
+    // shuffle the cardValue array
+    function shuffle(array) {
+      array.sort(() => Math.random() - 0.5);
+    }
+
+    // creating card
+    const createCards = (cardValue) => {
+      for (let i = 0; i < cardValue.length; i++) {
+        card.push({
+          flip: false,
+          value: cardValue[i],
+          id: i,
+        });
+      }
+    };
+
+    const createGame = () => {
+      createCardValue(cardLevel); // generating card value
+      shuffle(cardValue); // shuffling the card value
+      createCards(cardValue); // creating card
+      setCardDeck(card);
+      setCompareCardArr({});
+      setHeading(false);
+      setGameOver(false);
+      setPairCounter(0);
+    };
+    // createGame();
+
+    if (gameOver) {
+      setTimeout(() => {
+        createGame(); // if game is over than re generating game after 2 sec of delay so user can see win screen
+      }, 2000);
+    } else {
+      createGame(); //initial game start on page load
+    }
+  }, [gameOver]);
 
   // method to check {} is empty or not
   function isObjectEmpty(value) {
@@ -51,7 +68,8 @@ function Board() {
   }
   // function to check game is ended or not
   const gameEnd = () => {
-    if (pairCounter >= cardLevel / 2) {
+    if (pairCounter >= cardLevel / 2 - 1) {
+      setHeading(true);
       setGameOver(true);
     }
   };
@@ -101,21 +119,28 @@ function Board() {
 
   return (
     <>
-      <header>
+      <header className="board-header">
+        <h2 className="board-heading score">Score: {pairCounter}</h2>
         <h2 className="board-heading">
-          {gameOver ? "Congratulation you Won!" : "Memory Game!"}
+          {heading ? "Congratulation you Won!" : "Memory Game!"}
         </h2>
+
+        <button className="btn" onClick={() => setGameOver(true)}>
+          Reset
+        </button>
       </header>
-      <div className="board">
-        {cardDeck.map((item, id) => (
-          <Card
-            key={id}
-            cardDeck={cardDeck}
-            {...item}
-            compareCardArr={compareCardArr}
-            setCompareArr={setCompareArr}
-          />
-        ))}
+      <div className="board-body">
+        <div className="board-game">
+          {cardDeck.map((item, id) => (
+            <Card
+              key={id}
+              cardDeck={cardDeck}
+              {...item}
+              compareCardArr={compareCardArr}
+              setCompareArr={setCompareArr}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
