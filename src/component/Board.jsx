@@ -1,75 +1,81 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
 
-function Board() {
-  const cardLevel = 20;
+const cardLevel = 20;
+const cardValue = [];
+let card = [];
 
+// shuffle the cardValue array
+function shuffle(array) {
+  array.sort(() => Math.random() - 0.5);
+}
+
+// method to check {} is empty or not
+function isObjectEmpty(value) {
+  return (
+    Object.prototype.toString.call(value) === "[object Object]" &&
+    JSON.stringify(value) === "{}"
+  );
+}
+
+// creating values of the card
+const createCardValue = (cardLevel) => {
+  for (let i = 1; i <= cardLevel; i++) {
+    cardValue.push(Math.ceil(i / 2));
+  }
+};
+
+// creating card
+const createCards = (cardValue) => {
+  for (let i = 0; i < cardValue.length; i++) {
+    card.push({
+      flip: false,
+      value: cardValue[i],
+      id: i,
+    });
+  }
+};
+
+createCardValue(cardLevel); // generating card value
+const createGame = () => {
+  shuffle(cardValue); // shuffling the card value
+  createCards(cardValue); // creating card
+  // setCardDeck(card);
+};
+createGame(); //initial game start on page load
+
+function Board() {
   // initialinzing state
-  const [cardDeck, setCardDeck] = useState([]);
+  const [cardDeck, setCardDeck] = useState(card);
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
-  const [heading, setHeading] = useState(false);
+  const [heading, setHeading] = useState("Memory Game!");
   const [pairCounter, setPairCounter] = useState(0);
 
   useEffect(() => {
-    const cardValue = [];
-    let card = [];
-
-    // creating values of the card
-    const createCardValue = (cardLevel) => {
-      for (let i = 1; i <= cardLevel; i++) {
-        cardValue.push(Math.ceil(i / 2));
-      }
-    };
-
-    // shuffle the cardValue array
-    function shuffle(array) {
-      array.sort(() => Math.random() - 0.5);
-    }
-
-    // creating card
-    const createCards = (cardValue) => {
-      for (let i = 0; i < cardValue.length; i++) {
-        card.push({
-          flip: false,
-          value: cardValue[i],
-          id: i,
-        });
-      }
-    };
-
-    const createGame = () => {
-      createCardValue(cardLevel); // generating card value
-      shuffle(cardValue); // shuffling the card value
-      createCards(cardValue); // creating card
-      setCardDeck(card);
-      setCompareCardArr({});
-      setHeading(false);
-      setGameOver(false);
-      setPairCounter(0);
-    };
-    // createGame();
-
+    card = []; // emptying card array after assigning to state value.
     if (gameOver) {
       setTimeout(() => {
-        createGame(); // if game is over than re generating game after 2 sec of delay so user can see win screen
+        // if game is over than re generating game after 2 sec of delay so user can see win screen
+        resetGame();
       }, 2000);
-    } else {
-      createGame(); //initial game start on page load
     }
   }, [gameOver]);
 
-  // method to check {} is empty or not
-  function isObjectEmpty(value) {
-    return (
-      Object.prototype.toString.call(value) === "[object Object]" &&
-      JSON.stringify(value) === "{}"
-    );
-  }
+  // resetting game state on game over and on reset button click
+  const resetGame = () => {
+    createGame();
+    setCardDeck(card);
+    setCompareCardArr({});
+    setHeading("Memory Game!");
+    setGameOver(false);
+    setPairCounter(0);
+  };
+
   // function to check game is ended or not
   const gameEnd = () => {
     if (pairCounter >= cardLevel / 2 - 1) {
-      setHeading(true);
+      setHeading("Congratulation you Won!");
       setGameOver(true);
     }
   };
@@ -121,9 +127,7 @@ function Board() {
     <>
       <header className="board-header">
         <h2 className="board-heading score">Score: {pairCounter}</h2>
-        <h2 className="board-heading">
-          {heading ? "Congratulation you Won!" : "Memory Game!"}
-        </h2>
+        <h2 className="board-heading">{heading}</h2>
 
         <button className="btn" onClick={() => setGameOver(true)}>
           Reset
