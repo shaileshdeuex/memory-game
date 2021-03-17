@@ -23,12 +23,10 @@ const createCards = (cardValue) => {
     card.push({
       flip: false,
       value: cardValue[i],
-      id: i + 1, // id updated
+      id: i, // id updated
     });
   }
 };
-
-// createCards(cardValue);
 
 const createGame = () => {
   createCardValue(cardLevel);
@@ -51,7 +49,7 @@ function Board() {
       JSON.stringify(value) === "{}"
     );
   }
-
+  // function to check game is ended or not
   const gameEnd = () => {
     if (pairCounter >= cardLevel / 2) {
       setGameOver(true);
@@ -59,6 +57,7 @@ function Board() {
   };
 
   const setCompareArr = (newState) => {
+    // updating CardDeck value according to new state value
     setCardDeck(
       cardDeck.map((item, id) => {
         if (id === newState.id) {
@@ -70,18 +69,20 @@ function Board() {
       })
     );
 
+    // comparring previous click with new click and assigning value accordingly
     setCompareCardArr((preState) => {
       if (isObjectEmpty(preState)) {
-        return newState;
+        return newState; // prev state is empty so returing new state value
       } else if (preState.id === newState.id) {
-        return preState;
+        return preState; // prev click and new click on same card, returning same value
       } else if (preState.value === newState.value) {
-        setPairCounter(pairCounter + 1);
+        setPairCounter(pairCounter + 1); // increasing pairCounter if preValue and newValue is same.
         console.log("Match Found", pairCounter);
         gameEnd();
         return {};
       } else {
         setTimeout(() => {
+          // setting card value to previous state as pair is not found
           setCardDeck(
             cardDeck.map((item, id) => {
               if (id === preState.id || id === newState.id) {

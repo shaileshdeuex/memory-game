@@ -6,7 +6,7 @@ function Card(props) {
   };
 
   return (
-    <div className="flip-card" onClick={() => handleClick(id - 1)} id={id}>
+    <div className="flip-card" onClick={() => handleClick(id)} id={id}>
       <div className={`flip-card-inner  ${flip ? "flip" : "no-flip"}`}>
         <div className="flip-card-front">
           <img
