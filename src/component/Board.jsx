@@ -2,7 +2,7 @@ import { useState } from "react";
 import Card from "./Card";
 
 const cardValue = [];
-const cardLevel = 4;
+const cardLevel = 8;
 let card = [];
 
 // creating values of the card
@@ -11,7 +11,6 @@ const createCardValue = (cardLevel) => {
     cardValue.push(Math.ceil(i / 2));
   }
 };
-// createCardValue(cardLevel);
 
 // shuffle the cardValue array
 function shuffle(array) {
@@ -45,19 +44,6 @@ function Board() {
   const [gameOver, setGameOver] = useState(false);
   const [pairCounter, setPairCounter] = useState(1);
 
-  // const changeCardDeck = (cardID) => {
-  //   setCardDeck(
-  //     cardDeck.map((item, id) => {
-  //       if (id === cardID) {
-  //         item.flip = true;
-  //         return item;
-  //       } else {
-  //         return item;
-  //       }
-  //     })
-  //   );
-  // };
-
   // method to check {} is empty or not
   function isObjectEmpty(value) {
     return (
@@ -70,10 +56,6 @@ function Board() {
     if (pairCounter >= cardLevel / 2) {
       setGameOver(true);
     }
-    // const result = cardDeck.filter((item) => item.flip);
-    // if (result.length === cardLevel) {
-    //   setGameOver(true);
-    // }
   };
 
   const setCompareArr = (newState) => {
@@ -81,7 +63,6 @@ function Board() {
       cardDeck.map((item, id) => {
         if (id === newState.id) {
           item.flip = newState.flip;
-          // gameEnd(); // demo of end game
           return item;
         } else {
           return item;

@@ -1,9 +1,8 @@
 function Card(props) {
-  let { id, flip, value, changeCardDeck, setCompareArr } = props;
+  let { id, flip, value, setCompareArr } = props;
 
   const handleClick = (id) => {
     setCompareArr({ id, value, flip: true });
-    // changeCardDeck(id);
   };
 
   return (
