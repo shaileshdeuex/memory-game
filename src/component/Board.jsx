@@ -14,16 +14,6 @@ function isObjectEmpty(value) {
   );
 }
 
-// creating values of the card
-const createCardValue = (cardLevel, arr) => {
-  for (let i = 1; i <= cardLevel; i++) {
-    arr.push({
-      flip: false,
-      value: Math.ceil(i / 2),
-    });
-  }
-};
-
 function Board() {
   const cardLevel = 16;
   const card = [];
@@ -36,7 +26,17 @@ function Board() {
   const [pairCounter, setPairCounter] = useState(1);
   const [movesCounter, setMovesCounter] = useState(0);
 
-  createCardValue(cardLevel, card); // generating card value
+  // creating values of the card
+  const createCardValue = (cardLevel) => {
+    for (let i = 1; i <= cardLevel; i++) {
+      card.push({
+        flip: false,
+        value: Math.ceil(i / 2),
+      });
+    }
+  };
+
+  createCardValue(cardLevel); // generating card value
   shuffle(card); //initial game start
 
   // resetting game state on game over and on reset button click
