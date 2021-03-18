@@ -1,9 +1,13 @@
-import { useState } from "react";
 import Button from "./Button";
 
-function Levels({ levelSetUp, easy, medium, hard }) {
-  const [customeLevel, setcustomeLevel] = useState(easy);
-
+function Levels({
+  levelSetUp,
+  easy,
+  medium,
+  hard,
+  customeLevel,
+  customLevelSetup,
+}) {
   const easyLevel = () => {
     levelSetUp(easy);
   };
@@ -34,7 +38,7 @@ function Levels({ levelSetUp, easy, medium, hard }) {
           min={8}
           max={24}
           step={2}
-          onChange={(e) => setcustomeLevel(e.target.value)}
+          onChange={(e) => customLevelSetup(e)}
         />
         <Button title="Add" handleClick={(e) => customInput(e)} />
       </form>

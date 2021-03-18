@@ -18,10 +18,12 @@ function isObjectEmpty(value) {
 
 function Board() {
   // const cardLevel = 16;
-  let card = [];
+  const card = [];
   const easyLevel = 8,
     mediumLevel = 16,
     hardLevel = 24;
+  let score = 0,
+    baseScore;
 
   // initialinzing state
   const [cardLevel, setCardLevel] = useState(easyLevel);
@@ -32,6 +34,8 @@ function Board() {
   const [heading, setHeading] = useState("Memory Game!");
   const [pairCounter, setPairCounter] = useState(1);
   const [movesCounter, setMovesCounter] = useState(0);
+  const [customeLevel, setcustomeLevel] = useState(easyLevel);
+  // const [score, setScore] = useState(0);
 
   // creating values of the card
   const createCardValue = (cardLevel) => {
@@ -62,20 +66,33 @@ function Board() {
     setMovesCounter(0);
   };
 
+  const scoreCalculation = () => {
+    baseScore = cardLevel / 2 - 1;
+    score = Math.round((baseScore / movesCounter) * 100);
+  };
+
   // function to check game is ended or not
   const gameEnd = () => {
+    scoreCalculation();
     if (pairCounter >= cardLevel / 2) {
-      setHeading("Congratulation you Won!");
-      setGameOver(true);
+      setHeading(`Hurrah! 🎉 You won with ${score}% accuracy`);
+      setTimeout(() => {
+        setGameOver(true);
+      }, 1500);
     }
   };
 
   // Starting game according to level or custome input
   const levelSetUp = (level) => {
     setCardLevel(level);
-    card = [];
+    // card = [];
+    card.length = 0;
     createCardValue(level);
     restartGame();
+  };
+
+  const customLevelSetup = (event) => {
+    setcustomeLevel(event.target.value);
   };
 
   const setCompareArr = (newState) => {
@@ -100,7 +117,6 @@ function Board() {
       } else if (preState.value === newState.value) {
         setPairCounter(pairCounter + 1); // increasing pairCounter if preValue and newValue is same.
         setMovesCounter(movesCounter + 1);
-        console.log("Match Found", pairCounter);
         gameEnd();
         return {};
       } else {
@@ -137,6 +153,8 @@ function Board() {
         easy={easyLevel}
         medium={mediumLevel}
         hard={hardLevel}
+        customeLevel={customeLevel}
+        customLevelSetup={customLevelSetup}
       />
 
       <div className="board-body">
@@ -147,18 +165,10 @@ function Board() {
               src="https://giphy.com/embed/l0HlSDiA6WUytl9oA"
               className="winnerGif"
             ></iframe>
-            <Button
-              className="btn"
-              handleClick={restartGame}
-              title="Play Again"
-            />
+            <Button handleClick={restartGame} title="Play Again" />
           </div>
         ) : (
-          <div
-            className={`board-game  ${
-              cardLevel === hardLevel ? "hard-board" : ""
-            }`}
-          >
+          <div className={`board-game  ${cardLevel >= 18 ? "hard-board" : ""}`}>
             {cardDeck.map((item, id) => (
               <Card
                 key={id}
