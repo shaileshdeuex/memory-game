@@ -1,5 +1,7 @@
 import { useState } from "react";
+import Button from "./Button";
 import Card from "./Card";
+import Levels from "./Levels";
 
 // shuffle the cardValue array
 function shuffle(array) {
@@ -15,13 +17,18 @@ function isObjectEmpty(value) {
 }
 
 function Board() {
-  const cardLevel = 16;
-  const card = [];
+  // const cardLevel = 16;
+  let card = [];
+  const easyLevel = 8,
+    mediumLevel = 16,
+    hardLevel = 24;
 
   // initialinzing state
+  const [cardLevel, setCardLevel] = useState(easyLevel);
   const [cardDeck, setCardDeck] = useState(card);
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
+  // const [gameStart, setgameStart] = useState(false);
   const [heading, setHeading] = useState("Memory Game!");
   const [pairCounter, setPairCounter] = useState(1);
   const [movesCounter, setMovesCounter] = useState(0);
@@ -39,13 +46,14 @@ function Board() {
   createCardValue(cardLevel); // generating card value
   shuffle(card); //initial game start
 
-  // resetting game state on game over and on reset button click
+  // Restarting the game after game is over
   const restartGame = () => {
     resetGame();
     setHeading("Memory Game!");
     setGameOver(false);
   };
 
+  // Resetting the game if player want to start over again.
   const resetGame = () => {
     shuffle(card);
     setCardDeck(card);
@@ -60,6 +68,14 @@ function Board() {
       setHeading("Congratulation you Won!");
       setGameOver(true);
     }
+  };
+
+  // Starting game according to level or custome input
+  const levelSetUp = (level) => {
+    setCardLevel(level);
+    card = [];
+    createCardValue(level);
+    restartGame();
   };
 
   const setCompareArr = (newState) => {
@@ -113,10 +129,16 @@ function Board() {
         <h2 className="board-heading score">Moves: {movesCounter}</h2>
         <h2 className="board-heading">{heading}</h2>
 
-        <button className="btn" onClick={resetGame} disabled={gameOver}>
-          Reset
-        </button>
+        <Button handleClick={resetGame} disabled={gameOver} title="Reset" />
       </header>
+
+      <Levels
+        levelSetUp={levelSetUp}
+        easy={easyLevel}
+        medium={mediumLevel}
+        hard={hardLevel}
+      />
+
       <div className="board-body">
         {gameOver ? (
           <div className="winnerContainer">
@@ -125,12 +147,18 @@ function Board() {
               src="https://giphy.com/embed/l0HlSDiA6WUytl9oA"
               className="winnerGif"
             ></iframe>
-            <button className="btn" onClick={restartGame}>
-              Play Again
-            </button>
+            <Button
+              className="btn"
+              handleClick={restartGame}
+              title="Play Again"
+            />
           </div>
         ) : (
-          <div className="board-game">
+          <div
+            className={`board-game  ${
+              cardLevel === hardLevel ? "hard-board" : ""
+            }`}
+          >
             {cardDeck.map((item, id) => (
               <Card
                 key={id}
