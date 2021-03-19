@@ -1,3 +1,16 @@
+.game-start-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.game-input-container{
+  padding: 40px;
+  border: 2px solid;
+  border-radius: 8px;
+}
+
 .board-body{
   display: flex;
   justify-content: center;
@@ -24,7 +37,7 @@
 }
 
 .board-heading{
-  font-size: 40px;
+  font-size: 30px;
   margin: 5px 0;
       
 }
@@ -43,10 +56,18 @@ form{
   justify-content: center;
 }
 
-form input[type="number"]{
+.game-input-container form {
+  margin-top: 40px;
+}
+
+form input{
    margin-right: 12px;
     width: 100px;
     height: 25px;
+}
+
+form input[type="text"]{
+  width: 200px;
 }
 
 form label{
