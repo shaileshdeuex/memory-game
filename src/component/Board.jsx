@@ -16,18 +16,27 @@ function isObjectEmpty(value) {
   );
 }
 
-function Board() {
-  // const cardLevel = 16;
+// creating values of the card
+const createCardValue = (cardLevel) => {
   const card = [];
+  for (let i = 1; i <= cardLevel; i++) {
+    card.push({
+      flip: false,
+      value: Math.ceil(i / 2),
+    });
+  }
+  shuffle(card); //initial game start
+  return card;
+};
+
+function Board() {
   const easyLevel = 8,
     mediumLevel = 16,
     hardLevel = 24;
-  let score = 0,
-    baseScore;
 
   // initialinzing state
   const [cardLevel, setCardLevel] = useState(easyLevel);
-  const [cardDeck, setCardDeck] = useState(card);
+  const [cardDeck, setCardDeck] = useState(createCardValue(cardLevel));
   const [compareCardArr, setCompareCardArr] = useState({});
   const [gameOver, setGameOver] = useState(false);
   // const [gameStart, setgameStart] = useState(false);
@@ -35,47 +44,32 @@ function Board() {
   const [pairCounter, setPairCounter] = useState(1);
   const [movesCounter, setMovesCounter] = useState(0);
   const [customeLevel, setcustomeLevel] = useState(easyLevel);
-  // const [score, setScore] = useState(0);
-
-  // creating values of the card
-  const createCardValue = (cardLevel) => {
-    for (let i = 1; i <= cardLevel; i++) {
-      card.push({
-        flip: false,
-        value: Math.ceil(i / 2),
-      });
-    }
-  };
-
-  createCardValue(cardLevel); // generating card value
-  shuffle(card); //initial game start
 
   // Restarting the game after game is over
-  const restartGame = () => {
-    resetGame();
+  const restartGame = (level) => {
+    resetGame(level);
     setHeading("Memory Game!");
     setGameOver(false);
   };
 
   // Resetting the game if player want to start over again.
-  const resetGame = () => {
-    shuffle(card);
-    setCardDeck(card);
+  const resetGame = (level) => {
+    // shuffle(card);
+    setCardDeck(createCardValue(level));
     setCompareCardArr({});
     setPairCounter(1);
     setMovesCounter(0);
   };
 
   const scoreCalculation = () => {
-    baseScore = cardLevel / 2 - 1;
-    score = Math.round((baseScore / movesCounter) * 100);
+    let baseScore = cardLevel / 2 - 1;
+    return Math.round((baseScore / movesCounter) * 100);
   };
 
   // function to check game is ended or not
   const gameEnd = () => {
-    scoreCalculation();
     if (pairCounter >= cardLevel / 2) {
-      setHeading(`Hurrah! 🎉 You won with ${score}% accuracy`);
+      setHeading(`Hurrah! 🎉 You won with ${scoreCalculation()}% accuracy`);
       setTimeout(() => {
         setGameOver(true);
       }, 1500);
@@ -85,10 +79,7 @@ function Board() {
   // Starting game according to level or custome input
   const levelSetUp = (level) => {
     setCardLevel(level);
-    // card = [];
-    card.length = 0;
-    createCardValue(level);
-    restartGame();
+    restartGame(level);
   };
 
   const customLevelSetup = (event) => {
@@ -145,7 +136,11 @@ function Board() {
         <h2 className="board-heading score">Moves: {movesCounter}</h2>
         <h2 className="board-heading">{heading}</h2>
 
-        <Button handleClick={resetGame} disabled={gameOver} title="Reset" />
+        <Button
+          handleClick={() => resetGame(cardLevel)}
+          disabled={gameOver}
+          title="Reset"
+        />
       </header>
 
       <Levels
@@ -165,7 +160,10 @@ function Board() {
               src="https://giphy.com/embed/l0HlSDiA6WUytl9oA"
               className="winnerGif"
             ></iframe>
-            <Button handleClick={restartGame} title="Play Again" />
+            <Button
+              handleClick={() => restartGame(cardLevel)}
+              title="Play Again"
+            />
           </div>
         ) : (
           <div className={`board-game  ${cardLevel >= 18 ? "hard-board" : ""}`}>
